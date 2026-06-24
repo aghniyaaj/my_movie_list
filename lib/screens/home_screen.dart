@@ -44,7 +44,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('M', style: TextStyle(color: AppColors.primaryRed, fontSize: 24, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic)),
+                    Image.asset(
+                      'assets/images/logo.png', 
+                      width: 50, 
+                      height: 50, 
+                      errorBuilder: (context, error, stackTrace) => const Icon(Icons.movie, size: 100, color: AppColors.primaryRed)
+                    ),
                     CircleAvatar(
                       backgroundColor: AppColors.cardDark, 
                       child: Text(initial, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold))

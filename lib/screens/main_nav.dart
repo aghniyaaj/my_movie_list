@@ -57,7 +57,7 @@ class _MainNavState extends State<MainNav> {
     return Scaffold(
       body: screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: AppColors.cardDark,
+        backgroundColor: AppColors.bgDark,
         currentIndex: _currentIndex,
         selectedItemColor: AppColors.primaryRed,
         unselectedItemColor: Colors.grey,

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import '../core/constants.dart';
 import '../services/firebase_service.dart';
+import '../services/imgbb_service.dart'; 
 import 'auth/login_screen.dart';
 import 'review_history_screen.dart';
 import 'help_center_screen.dart';
@@ -125,14 +126,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         if (image != null) {
                           setStateSheet(() => isUpdating = true);
                           try {
-                            await FirebaseService().uploadProfilePicture(image);
-                            await user?.reload();
-                            user = FirebaseAuth.instance.currentUser;
-                            setState(() {}); 
-                            setStateSheet(() {}); 
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Foto profil diperbarui!')));
+                            // 1. KODE BARU: Kirim foto ke server gratis ImgBB
+                            String? imageUrl = await ImgbbService.uploadImage(image);
+                            
+                            if (imageUrl != null) {
+                              // 2. KODE BARU: Simpan 'link/url' dari ImgBB ke akun profil Firebase
+                              await user?.updatePhotoURL(imageUrl);
+                              await user?.reload();
+                              user = FirebaseAuth.instance.currentUser;
+                              
+                              // Refresh tampilan UI (INI KUNCINYA!)
+                              setState(() {}); 
+                              setStateSheet(() {}); 
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Foto profil berhasil diperbarui!')));
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Gagal mendapatkan link dari ImgBB.')));
+                            }
                           } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gagal unggah foto. Error: $e')));
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
                           }
                           setStateSheet(() => isUpdating = false);
                         }
@@ -145,7 +156,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: CircleAvatar(
                               radius: 40,
                               backgroundColor: AppColors.bgDark,
-                              backgroundImage: user?.photoURL != null ? NetworkImage(user!.photoURL!) : null,
+                              // KODE BARU: Tambahkan proxy 'https://wsrv.nl/?url=' di depan link foto
+                              backgroundImage: user?.photoURL != null ? NetworkImage('https://wsrv.nl/?url=${user!.photoURL!}') : null,
                               child: user?.photoURL == null 
                                 ? Text(_getInitials(), style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold))
                                 : null,
@@ -320,14 +332,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(height: 32),
 
-                  // Foto Profil
+                  // Foto Profil Utama
                   Container(
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: AppColors.primaryRed, width: 2)),
                     child: CircleAvatar(
                       radius: 40,
                       backgroundColor: AppColors.cardDark,
-                      backgroundImage: user?.photoURL != null ? NetworkImage(user!.photoURL!) : null,
+                      // KODE BARU: Tambahkan proxy 'https://wsrv.nl/?url=' di depan link foto
+                      backgroundImage: user?.photoURL != null ? NetworkImage('https://wsrv.nl/?url=${user!.photoURL!}') : null,
                       child: user?.photoURL == null 
                         ? Text(initial, style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold))
                         : null,

@@ -5,6 +5,9 @@ class AppConstants {
   static const String tmdbApiKey = 'aaab4dd8a2c74537ab0019995a6fe79c'; 
   static const String tmdbBaseUrl = 'https://api.themoviedb.org/3';
   static const String tmdbImageBaseUrl = 'https://image.tmdb.org/t/p/w500';
+
+  // API Key immgbb api
+  static const String  imgbbApiKey = '13f8a0e8da8fb434d0bfd795d17e12b7';
 }
 
 class AppColors {

@@ -36,16 +36,10 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/images/logo.jpeg', 
-              width: 100, 
-              height: 100, 
+              'assets/images/logo.png', 
+              width: 300, 
+              height: 300, 
               errorBuilder: (context, error, stackTrace) => const Icon(Icons.movie, size: 100, color: AppColors.primaryRed)
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'MY MOVIE\nLIST', 
-              textAlign: TextAlign.center, 
-              style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold, letterSpacing: 2)
             ),
           ],
         ),
