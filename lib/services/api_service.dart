@@ -22,6 +22,15 @@ class ApiService {
     throw Exception('Gagal memuat film populer');
   }
 
+  Future<List<Movie>> getUpcomingMovies() async {
+    final response = await http.get(Uri.parse('${AppConstants.tmdbBaseUrl}/movie/upcoming?api_key=${AppConstants.tmdbApiKey}&language=id-ID'));
+    if (response.statusCode == 200) {
+      final List results = json.decode(response.body)['results'];
+      return results.map((e) => Movie.fromJson(e)).toList();
+    }
+    throw Exception('Gagal memuat film mendatang');
+  }
+
   // Mengambil daftar pemain (Cast)
   Future<List<dynamic>> getMovieCast(int movieId) async {
     final response = await http.get(Uri.parse('${AppConstants.tmdbBaseUrl}/movie/$movieId/credits?api_key=${AppConstants.tmdbApiKey}&language=id-ID'));

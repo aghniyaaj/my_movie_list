@@ -13,6 +13,9 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   bool _isLoading = false;
+  
+  // 1. TAMBAH VARIABEL INI UNTUK VISIBILITAS PASSWORD
+  bool _isObscure = true; 
 
   void _login() async {
     setState(() => _isLoading = true);
@@ -66,6 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  // 2. UBAH FUNGSI INI
   Widget _buildTextField(String label, String hint, TextEditingController ctrl, bool isPass) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,7 +78,8 @@ class _LoginScreenState extends State<LoginScreen> {
         const SizedBox(height: 8),
         TextField(
           controller: ctrl,
-          obscureText: isPass,
+          // Ubah obscureText agar bergantung pada _isObscure
+          obscureText: isPass ? _isObscure : false,
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
             hintText: hint,
@@ -82,7 +87,20 @@ class _LoginScreenState extends State<LoginScreen> {
             filled: true,
             fillColor: AppColors.cardDark,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
-            suffixIcon: isPass ? const Icon(Icons.visibility_off, color: Colors.grey) : null,
+            // Ubah Icon menjadi IconButton agar bisa diklik
+            suffixIcon: isPass 
+                ? IconButton(
+                    icon: Icon(
+                      _isObscure ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.grey,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isObscure = !_isObscure; // Membalik status saat diklik
+                      });
+                    },
+                  ) 
+                : null,
           ),
         ),
       ],

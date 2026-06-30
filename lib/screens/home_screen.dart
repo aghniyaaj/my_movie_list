@@ -5,11 +5,14 @@ import '../models/movie_model.dart';
 import '../services/api_service.dart';
 import 'detail_screen.dart';
 import 'trending_screen.dart'; 
+import 'upcoming_screen.dart'; // KODE BARU: Import layar upcoming
 import 'search_screen.dart';
 import 'package:url_launcher/url_launcher.dart'; 
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final VoidCallback onNavigateToProfile; 
+
+  const HomeScreen({Key? key, required this.onNavigateToProfile}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -21,8 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Ambil inisial nama biar foto profilnya keren (bukan sekadar KS terus)
-    String initial = 'KS';
+    String initial = 'U';
     if (user?.displayName != null && user!.displayName!.trim().isNotEmpty) {
       String name = user!.displayName!.trim();
       initial = name.length >= 2 ? name.substring(0, 2).toUpperCase() : name.toUpperCase();
@@ -30,7 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
       initial = user!.email!.substring(0, 2).toUpperCase();
     }
 
-    // Di sini KITA TIDAK PAKAI BottomNavigationBar karena sudah diurus main_nav.dart
     return Scaffold(
       backgroundColor: AppColors.bgDark,
       body: SafeArea(
@@ -50,9 +51,25 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 50, 
                       errorBuilder: (context, error, stackTrace) => const Icon(Icons.movie, size: 100, color: AppColors.primaryRed)
                     ),
-                    CircleAvatar(
-                      backgroundColor: AppColors.cardDark, 
-                      child: Text(initial, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold))
+                    
+                    // Avatar Profil yang bisa diklik
+                    GestureDetector(
+                      onTap: widget.onNavigateToProfile, 
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: AppColors.primaryRed, width: 1.5), 
+                        ),
+                        child: CircleAvatar(
+                          radius: 18,
+                          backgroundColor: AppColors.cardDark,
+                          backgroundImage: user?.photoURL != null ? NetworkImage('https://wsrv.nl/?url=${user!.photoURL!}') : null,
+                          child: user?.photoURL == null 
+                            ? Text(initial, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold))
+                            : null,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -83,9 +100,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 20),
                 
-                // Mulai Menampilkan Data Film
+                // Mulai Menampilkan Data Film dengan FutureBuilder
                 FutureBuilder<List<List<Movie>>>(
-                  future: Future.wait([_api.getTrendingMovies(), _api.getPopularMovies()]),
+                  // KODE BARU: Menambahkan request getUpcomingMovies ke dalam Future.wait
+                  future: Future.wait([
+                    _api.getTrendingMovies(), 
+                    _api.getPopularMovies(),
+                    _api.getUpcomingMovies()
+                  ]),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator(color: AppColors.primaryRed));
@@ -94,8 +116,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       return Text('Error: ${snapshot.error}', style: const TextStyle(color: Colors.red));
                     }
 
+                    // Menarik data dari index array snapshot
                     final trending = snapshot.data![0];
                     final popular = snapshot.data![1];
+                    final upcoming = snapshot.data![2]; 
+                    
                     final featured = trending.isNotEmpty ? trending[0] : null;
 
                     return Column(
@@ -177,8 +202,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Text('Sedang Tren', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-                            
-                            // INI TOMBOL LIHAT SEMUA YANG SUDAH DIPERBAIKI (BISA DIKLIK)
                             GestureDetector(
                               onTap: () {
                                 Navigator.push(context, MaterialPageRoute(builder: (_) => const TrendingScreen()));
@@ -189,7 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(height: 16),
 
-                        // 3. List Film Tren (Horizontal)
+                        // List Film Tren (Horizontal)
                         SizedBox(
                           height: 160,
                           child: ListView.builder(
@@ -197,6 +220,63 @@ class _HomeScreenState extends State<HomeScreen> {
                             itemCount: trending.length > 10 ? 10 : trending.length,
                             itemBuilder: (context, index) {
                               final movie = trending[index];
+                              return GestureDetector(
+                                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => DetailScreen(movie: movie))),
+                                  child: Container(
+                                    width: 110, margin: const EdgeInsets.only(right: 12),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12), 
+                                      image: DecorationImage(
+                                        image: NetworkImage(AppConstants.tmdbImageBaseUrl + movie.posterPath), fit: BoxFit.cover
+                                      )
+                                    ),
+                                    alignment: Alignment.topRight,
+                                    padding: const EdgeInsets.all(6),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.7),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(Icons.star, color: Colors.amber, size: 10),
+                                          const SizedBox(width: 4),
+                                          Text(movie.voteAverage.toStringAsFixed(1), style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        
+                        // 3. KODE BARU: Teks "Mendatang" & Tombol "Lihat Semua"
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Mendatang', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (_) => const UpcomingScreen()));
+                              },
+                              child: const Text('Lihat Semua', style: TextStyle(color: AppColors.primaryRed, fontSize: 12)),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+
+                        // List Film Mendatang (Horizontal - Meniru Sedang Tren)
+                        SizedBox(
+                          height: 160,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: upcoming.length > 10 ? 10 : upcoming.length,
+                            itemBuilder: (context, index) {
+                              final movie = upcoming[index];
                               return GestureDetector(
                                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => DetailScreen(movie: movie))),
                                   child: Container(

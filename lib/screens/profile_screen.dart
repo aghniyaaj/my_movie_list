@@ -74,7 +74,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final TextEditingController nameCtrl = TextEditingController(text: user?.displayName ?? '');
     final TextEditingController emailCtrl = TextEditingController(text: user?.email ?? '');
     final TextEditingController passwordCtrl = TextEditingController();
+    
     bool isUpdating = false;
+    // 1. TAMBAH VARIABEL INI UNTUK VISIBILITAS PASSWORD DI POP-UP
+    bool isObscure = true;
 
     showModalBottomSheet(
       context: context,
@@ -126,16 +129,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         if (image != null) {
                           setStateSheet(() => isUpdating = true);
                           try {
-                            // 1. KODE BARU: Kirim foto ke server gratis ImgBB
                             String? imageUrl = await ImgbbService.uploadImage(image);
                             
                             if (imageUrl != null) {
-                              // 2. KODE BARU: Simpan 'link/url' dari ImgBB ke akun profil Firebase
                               await user?.updatePhotoURL(imageUrl);
                               await user?.reload();
                               user = FirebaseAuth.instance.currentUser;
                               
-                              // Refresh tampilan UI (INI KUNCINYA!)
                               setState(() {}); 
                               setStateSheet(() {}); 
                               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Foto profil berhasil diperbarui!')));
@@ -156,7 +156,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: CircleAvatar(
                               radius: 40,
                               backgroundColor: AppColors.bgDark,
-                              // KODE BARU: Tambahkan proxy 'https://wsrv.nl/?url=' di depan link foto
                               backgroundImage: user?.photoURL != null ? NetworkImage('https://wsrv.nl/?url=${user!.photoURL!}') : null,
                               child: user?.photoURL == null 
                                 ? Text(_getInitials(), style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold))
@@ -179,7 +178,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(height: 16),
                     _buildDialogTextField('Email (Tidak bisa diubah)', emailCtrl, false, enabled: false),
                     const SizedBox(height: 16),
-                    _buildDialogTextField('Ganti Password (Kosongkan jika tidak)', passwordCtrl, true),
+                    
+                    // 2. UBAH PEMANGGILAN FIELD PASSWORD
+                    _buildDialogTextField(
+                      'Ganti Password (Kosongkan jika tidak)', 
+                      passwordCtrl, 
+                      true, 
+                      isObscure: isObscure,
+                      onToggleVisibility: () {
+                        setStateSheet(() {
+                          isObscure = !isObscure;
+                        });
+                      }
+                    ),
+                    
                     const SizedBox(height: 32),
                     
                     // Tombol Simpan Perubahan
@@ -228,7 +240,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildDialogTextField(String label, TextEditingController controller, bool isPassword, {bool enabled = true}) {
+  // 3. UBAH FUNGSI BUILD FIELD AGAR MENDUKUNG TOMBOL MATA
+  Widget _buildDialogTextField(
+    String label, 
+    TextEditingController controller, 
+    bool isPassword, {
+    bool enabled = true,
+    bool isObscure = false,
+    VoidCallback? onToggleVisibility,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -236,7 +256,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         const SizedBox(height: 6),
         TextField(
           controller: controller,
-          obscureText: isPassword,
+          obscureText: isPassword ? isObscure : false,
           enabled: enabled,
           style: TextStyle(color: enabled ? Colors.white : AppColors.textGrey, fontSize: 14),
           decoration: InputDecoration(
@@ -244,6 +264,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
             fillColor: AppColors.bgDark,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+            suffixIcon: isPassword 
+                ? IconButton(
+                    icon: Icon(
+                      isObscure ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.grey,
+                    ),
+                    onPressed: onToggleVisibility,
+                  )
+                : null,
           ),
         ),
       ],
@@ -339,7 +368,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: CircleAvatar(
                       radius: 40,
                       backgroundColor: AppColors.cardDark,
-                      // KODE BARU: Tambahkan proxy 'https://wsrv.nl/?url=' di depan link foto
                       backgroundImage: user?.photoURL != null ? NetworkImage('https://wsrv.nl/?url=${user!.photoURL!}') : null,
                       child: user?.photoURL == null 
                         ? Text(initial, style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold))
