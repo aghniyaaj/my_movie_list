@@ -55,8 +55,6 @@ Aplikasi ini tidak sekadar menampilkan data, tetapi mengimplementasikan standar 
 
 ## Antarmuka Aplikasi (Slicing Figma)
 
-> *(Catatan: Simpan file screenshot aplikasi Anda di dalam folder `Dokumentasi/screenshot/` dengan nama file `home.png`, `detail.png`, `mylist.png`, dan `profile.png` agar otomatis muncul di bawah ini)*
-
 | Home Dashboard | Search & Genre | Detail Film (Info) | My List (Wishlist) |
 |:---:|:---:|:---:|:---:|
 | ![Home](Dokumentasi/screenshot/home.png) | ![Detail](Dokumentasi/screenshot/detail.png) | ![My List](Dokumentasi/screenshot/mylist.png) | ![Profile](Dokumentasi/screenshot/profile.png) |
