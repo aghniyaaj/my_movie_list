@@ -55,11 +55,11 @@ Aplikasi ini tidak sekadar menampilkan data, tetapi mengimplementasikan standar 
 
 ## Antarmuka Aplikasi (Slicing Figma)
 
-> *(Catatan: Ganti teks di bawah ini dengan tautan gambar asli GitHub Repository Anda)*
+> *(Catatan: Simpan file screenshot aplikasi Anda di dalam folder `Dokumentasi/screenshot/` dengan nama file `home.png`, `detail.png`, `mylist.png`, dan `profile.png` agar otomatis muncul di bawah ini)*
 
 | Home Dashboard | Search & Genre | Detail Film (Info) | My List (Wishlist) |
 |:---:|:---:|:---:|:---:|
-| ![Home](link_gambar_1) | ![Search](link_gambar_2) | ![Detail](link_gambar_3) | ![MyList](link_gambar_4) |
+| ![Home](Dokumentasi/screenshot/home.png) | ![Detail](Dokumentasi/screenshot/detail.png) | ![My List](Dokumentasi/screenshot/mylist.png) | ![Profile](Dokumentasi/screenshot/profile.png) |
 
 ---
 
