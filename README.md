@@ -1,6 +1,6 @@
 <div align="center">
   <img src="assets/images/logo.png" width="150" alt="My Movie List Logo">
-  <h1>My Movie List 🎬</h1>
+  <h1>My Movie List</h1>
   <p><strong>Aplikasi Mobile Flutter Lintas-Platform dengan Integrasi TMDB API & Firebase Cloud Firestore</strong></p>
   
   [![Flutter](https://img.shields.io/badge/Flutter-%5E3.11.0-02569B?logo=flutter)](https://flutter.dev/)
@@ -19,7 +19,7 @@ Dibuat sebagai **Tugas Akhir Mata Kuliah Pemrograman Mobile (Institut Teknologi 
 
 ---
 
-## 📥 Unduh / Instalasi Cepat (APK)
+## Unduh / Instalasi Cepat (APK)
 
 Anda dapat langsung mencoba aplikasi ini di perangkat Android (Android 5.0+ hingga Android 14) dengan mengunduh berkas instalasi (`.apk`) yang telah dikompilasi secara *Ahead-of-Time* (AOT):
 
@@ -27,21 +27,21 @@ Anda dapat langsung mencoba aplikasi ini di perangkat Android (Android 5.0+ hing
 
 ---
 
-## ✨ Fitur & Rekayasa Perangkat Lunak Utama
+## Fitur & Rekayasa Perangkat Lunak Utama
 
 Aplikasi ini tidak sekadar menampilkan data, tetapi mengimplementasikan standar rekayasa perangkat lunak modern:
 
-- 🛡️ **Autentikasi Terenkripsi**: Login/Register berbasis Firebase Auth. Melindungi data kredensial dengan validasi lokal tingkat lanjut (`GlobalKey<FormState>`).
-- ⚡ **Optimistic UI Rendering**: Penambahan film ke *Wishlist* atau *Watched* bereaksi dalam **0 detik**. *State* UI berubah secara lokal instan sebelum komunikasi jaringan (*Network I/O*) ke Firebase selesai dikonfirmasi.
-- 📜 **Infinite Scrolling Engine**: Halaman *Trending, Popular*, dan *Search* menggunakan algoritma pendeteksi proksimitas piksel untuk mengunduh halaman API selanjutnya (`page=N+1`) tanpa perlu tombol muat ulang, lengkap dengan pelindung *state locking* anti-*spam*.
-- 🗃️ **Arsitektur Database Anti-Redundan**: Dokumen pengguna di Firestore **tidak menyimpan salinan poster atau sinopsis**. Database murni hanya memegang `movieId` untuk mereduksi biaya *Document Reads*, lalu merakit *Futures Array* paralel (`Future.wait`) untuk menarik aset visual langsung dari server TMDB.
-- 💬 **Sistem Ulasan (UGC) Real-Time**: Interaksi pengguna ditangkap melalui sub-koleksi spesifik (`movies/{movieId}/reviews`) dan ditampilkan seketika ke seluruh pengguna menggunakan *listener* `StreamBuilder`.
-- 🖼️ **File to URL Piping**: Pengubahan foto profil menggunakan *ImagePicker* untuk membaca *Byte Array* di memori RAM, lalu merakit HTTP *Multipart-Request* ke ImgBB, menjauhkan basis data utama dari beban penyimpanan biner besar (Blob).
-- 🎥 **Intent Sekuritas Android 11+**: Mendukung *Package Visibility SDK 30+* dengan manifest kueri khusus, agar *Trailer* YouTube bisa ditembakkan via *Intent Browser/App* tanpa diblokir sistem.
+- **Autentikasi Terenkripsi**: Login/Register berbasis Firebase Auth. Melindungi data kredensial dengan validasi lokal tingkat lanjut (`GlobalKey<FormState>`).
+- **Optimistic UI Rendering**: Penambahan film ke *Wishlist* atau *Watched* bereaksi dalam **0 detik**. *State* UI berubah secara lokal instan sebelum komunikasi jaringan (*Network I/O*) ke Firebase selesai dikonfirmasi.
+- **Infinite Scrolling Engine**: Halaman *Trending, Popular*, dan *Search* menggunakan algoritma pendeteksi proksimitas piksel untuk mengunduh halaman API selanjutnya (`page=N+1`) tanpa perlu tombol muat ulang, lengkap dengan pelindung *state locking* anti-*spam*.
+- **Arsitektur Database Anti-Redundan**: Dokumen pengguna di Firestore **tidak menyimpan salinan poster atau sinopsis**. Database murni hanya memegang `movieId` untuk mereduksi biaya *Document Reads*, lalu merakit *Futures Array* paralel (`Future.wait`) untuk menarik aset visual langsung dari server TMDB.
+- **Sistem Ulasan (UGC) Real-Time**: Interaksi pengguna ditangkap melalui sub-koleksi spesifik (`movies/{movieId}/reviews`) dan ditampilkan seketika ke seluruh pengguna menggunakan *listener* `StreamBuilder`.
+- **File to URL Piping**: Pengubahan foto profil menggunakan *ImagePicker* untuk membaca *Byte Array* di memori RAM, lalu merakit HTTP *Multipart-Request* ke ImgBB, menjauhkan basis data utama dari beban penyimpanan biner besar (Blob).
+- **Intent Sekuritas Android 11+**: Mendukung *Package Visibility SDK 30+* dengan manifest kueri khusus, agar *Trailer* YouTube bisa ditembakkan via *Intent Browser/App* tanpa diblokir sistem.
 
 ---
 
-## 🛠️ Stack Teknologi
+## Stack Teknologi
 
 - **Framework Utama**: Flutter (Dart)
 - **State Management**: Stateful Lifecycle API (*Prop-Drilling Pattern*)
@@ -53,7 +53,7 @@ Aplikasi ini tidak sekadar menampilkan data, tetapi mengimplementasikan standar 
 
 ---
 
-## 📸 Antarmuka Aplikasi (Slicing Figma)
+## Antarmuka Aplikasi (Slicing Figma)
 
 > *(Catatan: Ganti teks di bawah ini dengan tautan gambar asli GitHub Repository Anda)*
 
@@ -63,7 +63,7 @@ Aplikasi ini tidak sekadar menampilkan data, tetapi mengimplementasikan standar 
 
 ---
 
-## 🚀 Panduan Kompilasi Mandiri (Development Build)
+## Panduan Kompilasi Mandiri (Development Build)
 
 Bagi penguji atau kontributor yang ingin merakit aplikasi ini dari sumber aslinya:
 
@@ -90,7 +90,7 @@ Bagi penguji atau kontributor yang ingin merakit aplikasi ini dari sumber asliny
    flutter run
    ```
 
-### 📦 Panduan Rilis Produksi (Production APK)
+### Panduan Rilis Produksi (Production APK)
 
 Kompilasi aplikasi ini memanfaatkan algoritma *Tree-Shaking* (penghapusan kelas sampah) dan *R8 Engine* dari Gradle untuk mengaburkan kode (*obfuscate*). Untuk menghasilkan APK:
 
