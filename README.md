@@ -53,7 +53,7 @@ Aplikasi ini tidak sekadar menampilkan data, tetapi mengimplementasikan standar 
 
 ---
 
-## Antarmuka Aplikasi (Slicing Figma)
+## Antarmuka Aplikasi
 
 | Home Dashboard | Search & Genre | Detail Film (Info) | My List (Wishlist) |
 |:---:|:---:|:---:|:---:|
